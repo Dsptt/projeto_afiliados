@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecionando... | IhuOfertas</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .product-title {
+      font-size: 1rem;
+      color: #a0aec0;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #4fd1c5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4fd1c5, #38b2ac);
+      animation: progress 2s ease-in-out forwards;
+    }
+
+    @keyframes progress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      font-size: 0.75rem;
+      color: #718096;
+    }
+
+    .error {
+      background: rgba(245, 101, 101, 0.1);
+      border: 1px solid rgba(245, 101, 101, 0.3);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/assets/logo.png" alt="IhuOfertas" class="logo" id="logo">
+    <h1>Redirecionando...</h1>
+    <p class="product-title" id="productTitle">Preparando sua oferta especial</p>
+    <div class="spinner"></div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="error" id="error">
+      <p>Não foi possível encontrar o produto. <a href="/" style="color: #4fd1c5;">Voltar ao início</a></p>
+    </div>
+  </div>
+  <p class="footer">🛒 IhuOfertas - As melhores ofertas para você</p>
+
+  <script>
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      const utmSource = urlParams.get('utm_source') || 'direct';
+
+      if (!productId) {
+        document.getElementById('error').style.display = 'block';
+        document.querySelector('.spinner').style.display = 'none';
+        document.querySelector('.progress-bar').style.display = 'none';
+        return;
+      }
+
+      // Fetch product info
+      fetch(`/api/get-product?id=${encodeURIComponent(productId)}`)
+        .then(res => res.json())
+        .then(product => {
+          if (product.error) {
+            throw new Error(product.error);
+          }
+
+          // Update title
+          document.getElementById('productTitle').textContent = product.title || 'Oferta Especial';
+
+          // Track the click
+          fetch(`/api/track-click?utm_source=${encodeURIComponent(utmSource)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              productId: productId,
+              timestamp: Date.now(),
+              userAgent: navigator.userAgent
+            })
+          }).catch(err => console.warn('Tracking failed:', err));
+
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            if (product.affiliateLink) {
+              window.location.href = product.affiliateLink;
+            } else {
+              document.getElementById('error').style.display = 'block';
+              document.querySelector('.spinner').style.display = 'none';
+            }
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          document.getElementById('error').style.display = 'block';
+          document.querySelector('.spinner').style.display = 'none';
+          document.querySelector('.progress-bar').style.display = 'none';
+        });
+    })();
+  </script>
+</body>
+</html>

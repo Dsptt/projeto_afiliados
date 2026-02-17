@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check admin status
+    function isAdmin() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Products: authenticated read, admin write
+    match /products/{id} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+    
+    // Creatives: authenticated read, admin write
+    match /creatives/{id} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+    
+    // Clicks: admin read, public create (for tracking)
+    match /clicks/{id} {
+      allow read: if isAdmin();
+      allow create: if true;
+    }
+    
+    // Settings: admin only
+    match /settings/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Groups: admin only
+    match /groups/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Admins: admin only
+    match /admins/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

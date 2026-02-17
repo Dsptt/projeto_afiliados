@@ -1,0 +1,21 @@
+{
+    "name": "affiliate-local-scraper",
+    "version": "1.0.0",
+    "description": "Local Playwright scraper for Amazon Brazil deals",
+    "main": "local-scraper.js",
+    "scripts": {
+        "scrape": "npx ts-node local-scraper.ts",
+        "scrape:js": "node local-scraper.js",
+        "build": "tsc",
+        "setup": "npm install && npx playwright install chromium"
+    },
+    "dependencies": {
+        "firebase-admin": "^13.0.2",
+        "playwright": "^1.42.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.0",
+        "typescript": "^5.3.3",
+        "ts-node": "^10.9.2"
+    }
+}
