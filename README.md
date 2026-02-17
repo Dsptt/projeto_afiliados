@@ -1,43 +1,110 @@
-# IhuOfertas - Affiliate Link Management Hub
+# Hub de Afiliados Amazon
 
-Serverless affiliate automation: Amazon PA-API → Firestore → Sharp.js creatives → ntfy.sh notifications → manual posting → Firebase Hosting tracking.
+Sistema automático para gerar imagens promocionais de produtos da Amazon com rastreamento de cliques.
 
-## Quick Start
+## 🚀 Funcionalidades
+
+- **Geração de Criativos**: Cria imagens promocionais automaticamente
+- **Scraping Amazon**: Busca dados de produtos (preço, título, imagem)
+- **Rastreamento**: Conta cliques em cada produto
+- **Fonte Customizada**: Usa fonte Figtree para visual profissional
+
+## 📋 Pré-requisitos
+
+- Node.js 18+
+- Conta Firebase
+- Firebase CLI instalado
+
+## ⚙️ Instalação
 
 ```bash
-# Install dependencies
-cd functions && npm install
+# Clonar repositório
+git clone https://github.com/Dsptt/projeto_afiliados.git
+cd projeto_afiliados
 
-# Build TypeScript
-npm run build
+# Instalar dependências
+cd functions
+npm install
 
-# Deploy
-firebase deploy
+# Configurar Firebase
+firebase login
+firebase use --add
 ```
 
-## Project Structure
+## 🎨 Configuração do Layout
+
+Edite as constantes em `functions/src/creativeGenerator.ts`:
+
+```typescript
+TEMPLATE = {
+  PRODUCT_WIDTH: 800,      // Largura da imagem do produto
+  PRODUCT_HEIGHT: 600,     // Altura da imagem do produto
+  PRODUCT_FIT: "cover",    // "cover" | "contain" | "fill"
+  TITLE_OPACITY: 0.8,      // Opacidade do título (0.0 a 1.0)
+}
+```
+
+### Modos de Ajuste da Imagem:
+- **`cover`**: Preenche toda área (pode cortar bordas)
+- **`contain`**: Cabe sem cortar (pode ter espaços vazios)
+- **`fill`**: Estica para preencher (pode distorcer)
+
+## 🧪 Testar Localmente
+
+```bash
+cd functions
+npm run test-creative
+```
+
+A imagem será salva em `functions/lib/test-creative.jpg`
+
+## 🚀 Deploy
+
+```bash
+cd functions
+npm run deploy
+```
+
+## 📡 Endpoints
+
+### Gerar criativo de um produto
+```
+POST /generateCreative
+Body: { "asin": "B0XXXXXX" }
+```
+
+### Gerar todos os criativos
+```
+GET /generateAllCreatives
+```
+
+### Rastreamento de cliques
+```
+GET /r/:productId
+```
+
+## 📁 Estrutura
 
 ```
-├── frontend/           # Static hosting files
-│   ├── r/index.html   # Redirect page (tracks clicks)
-│   ├── index.html     # Landing page
-│   └── 404.html       # Error page
-├── functions/          # Cloud Functions
-│   └── src/index.ts   # trackClick, getProduct
-├── firebase.json       # Firebase config
-├── firestore.rules     # Security rules
-└── storage.rules       # Storage rules
+projeto_afiliados/
+├── functions/
+│   ├── src/
+│   │   ├── creativeGenerator.ts    # Gerador de imagens
+│   │   ├── scraper/                # Scrapers Amazon
+│   │   └── index.ts                # Endpoints
+│   └── assets/                     # Fontes e templates
+└── scripts/                        # Scripts auxiliares
 ```
 
-## Environment Variables
+## 🔐 Segurança
 
-Copy `.env.example` to `.env` and fill in your credentials.
+**Nunca commite:**
+- `service-account.json`
+- `.env`
+- Credenciais Firebase
 
-## Redirect URLs
+Esses arquivos já estão no `.gitignore`.
 
-Format: `https://ihuofertas.com.br/r/?id={productId}&utm_source={groupName}`
+## 📝 Licença
 
-## Domain
-
-- **Production:** ihuofertas.com.br
-- **Firebase Project:** ihuofertas-hub
+Projeto privado - Todos os direitos reservados
