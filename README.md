@@ -2,20 +2,19 @@
 
 Sistema automático para gerar imagens promocionais de produtos da Amazon com rastreamento de cliques.
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 - **Geração de Criativos**: Cria imagens promocionais automaticamente
 - **Scraping Amazon**: Busca dados de produtos (preço, título, imagem)
 - **Rastreamento**: Conta cliques em cada produto
-- **Fonte Customizada**: Usa fonte Figtree para visual profissional
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Node.js 18+
 - Conta Firebase
 - Firebase CLI instalado
 
-## ⚙️ Instalação
+## Instalação
 
 ```bash
 # Clonar repositório
@@ -31,25 +30,7 @@ firebase login
 firebase use --add
 ```
 
-## 🎨 Configuração do Layout
-
-Edite as constantes em `functions/src/creativeGenerator.ts`:
-
-```typescript
-TEMPLATE = {
-  PRODUCT_WIDTH: 800,      // Largura da imagem do produto
-  PRODUCT_HEIGHT: 600,     // Altura da imagem do produto
-  PRODUCT_FIT: "cover",    // "cover" | "contain" | "fill"
-  TITLE_OPACITY: 0.8,      // Opacidade do título (0.0 a 1.0)
-}
-```
-
-### Modos de Ajuste da Imagem:
-- **`cover`**: Preenche toda área (pode cortar bordas)
-- **`contain`**: Cabe sem cortar (pode ter espaços vazios)
-- **`fill`**: Estica para preencher (pode distorcer)
-
-## 🧪 Testar Localmente
+## Testar Localmente
 
 ```bash
 cd functions
@@ -58,14 +39,14 @@ npm run test-creative
 
 A imagem será salva em `functions/lib/test-creative.jpg`
 
-## 🚀 Deploy
+## Deploy
 
 ```bash
 cd functions
 npm run deploy
 ```
 
-## 📡 Endpoints
+## Endpoints
 
 ### Gerar criativo de um produto
 ```
@@ -83,7 +64,7 @@ GET /generateAllCreatives
 GET /r/:productId
 ```
 
-## 📁 Estrutura
+## Estrutura
 
 ```
 projeto_afiliados/
@@ -96,15 +77,6 @@ projeto_afiliados/
 └── scripts/                        # Scripts auxiliares
 ```
 
-## 🔐 Segurança
+## Licença
 
-**Nunca commite:**
-- `service-account.json`
-- `.env`
-- Credenciais Firebase
-
-Esses arquivos já estão no `.gitignore`.
-
-## 📝 Licença
-
-Projeto privado - Todos os direitos reservados
+Projeto pessoal/privado
